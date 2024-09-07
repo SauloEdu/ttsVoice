@@ -15,7 +15,8 @@ MAX_THREADS = 1
 def fragmentar_texto(texto, tamanho_maximo=200):
     """
     Fragmenta o texto em partes menores, respeitando palavras,
-    e realiza as substituições necessárias.
+    realiza as substituições necessárias e adiciona uma vírgula ao final
+    de cada fragmento.
     """
     # Substitui . por "ponto" se estiver entre números, caso contrário, por ", "
     texto = re.sub(r'(?<=\d)\.(?=\d)', ' ponto ', texto)
@@ -31,10 +32,10 @@ def fragmentar_texto(texto, tamanho_maximo=200):
         if len(fragmento_atual) + len(palavra) + 1 <= tamanho_maximo:
             fragmento_atual += palavra + " "
         else:
-            fragmentos.append(fragmento_atual.strip())
+            fragmentos.append(fragmento_atual.strip() + ",") # Adiciona a vírgula aqui
             fragmento_atual = palavra + " "
     if fragmento_atual:
-        fragmentos.append(fragmento_atual.strip())
+        fragmentos.append(fragmento_atual.strip() + ",") # Adiciona a vírgula aqui também
     return fragmentos
 
 def atualizar_barra_progresso(total_fragmentos, processados_fragmentos, tempo_estimado=None, unindo_audios=False):
