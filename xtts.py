@@ -14,28 +14,31 @@ MAX_THREADS = 1
 
 def fragmentar_texto(texto, tamanho_maximo=200):
     """
-    Fragmenta o texto em partes menores, respeitando palavras,
-    realiza as substituições necessárias e adiciona uma vírgula ao final
-    de cada fragmento.
+    Fragmenta o texto em frases, respeitando a pontuação e o tamanho máximo,
+    e substitui pontos finais por vírgulas nos fragmentos, exceto no último.
     """
-    # Substitui . por "ponto" se estiver entre números, caso contrário, por ", "
-    texto = re.sub(r'(?<=\d)\.(?=\d)', ' ponto ', texto)
-    texto = re.sub(r'(?<!\d)\.(?!\d)', ', ', texto)
-    
-    # Substitui 0 por "zero", exceto quando precedido por um ponto
-    texto = re.sub(r'(?<!\.)0', 'zero', texto)
-
-    palavras = texto.split()
     fragmentos = []
     fragmento_atual = ""
-    for palavra in palavras:
-        if len(fragmento_atual) + len(palavra) + 1 <= tamanho_maximo:
-            fragmento_atual += palavra + " "
-        else:
-            fragmentos.append(fragmento_atual.strip() + ",") # Adiciona a vírgula aqui
-            fragmento_atual = palavra + " "
-    if fragmento_atual:
-        fragmentos.append(fragmento_atual.strip() + ",") # Adiciona a vírgula aqui também
+    
+    i = 0
+    while i < len(texto):
+        caractere = texto[i]
+        fragmento_atual += caractere
+
+        if caractere in ('.', '!', '?', ';'):
+            if len(fragmento_atual.strip()) > 0:
+                fragmentos.append(fragmento_atual.strip())
+            fragmento_atual = ""
+        elif i + 1 == len(texto):
+            # Adiciona o último fragmento, caso exista
+            fragmentos.append(fragmento_atual.strip())
+        
+        i += 1
+    
+    # Substitui '.' por ',' em todos os fragmentos, exceto o último
+    for j in range(len(fragmentos) - 1):
+        fragmentos[j] = fragmentos[j].replace('.', ',')
+    
     return fragmentos
 
 def atualizar_barra_progresso(total_fragmentos, processados_fragmentos, tempo_estimado=None, unindo_audios=False):
