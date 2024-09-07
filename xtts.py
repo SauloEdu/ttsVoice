@@ -26,11 +26,11 @@ def fragmentar_texto(texto, tamanho_maximo=200):
         fragmento_atual += caractere
 
         if caractere in ('.', '!', '?', ';'):
-            if len(fragmento_atual.strip()) > 0:
+            if len(fragmento_atual.strip()) > 0:  # Verifica se o fragmento não está vazio
                 fragmentos.append(fragmento_atual.strip())
-            fragmento_atual = ""
-        elif i + 1 == len(texto):
-            # Adiciona o último fragmento, caso exista
+                fragmento_atual = ""
+        elif i + 1 == len(texto) and fragmento_atual.strip():  # Verificação corrigida para o último fragmento
+            # Adiciona o último fragmento, caso exista e não seja vazio
             fragmentos.append(fragmento_atual.strip())
         
         i += 1
